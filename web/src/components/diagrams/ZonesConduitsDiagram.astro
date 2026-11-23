@@ -1,0 +1,356 @@
+---
+import type { Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  caption: string;
+}
+
+const { lang, title, caption } = Astro.props;
+
+const labels =
+  lang === 'fr'
+    ? {
+        statusPetrol: 'Zone OT nominale',
+        statusSignal: 'Confinement DMZ actif',
+        ariaTitle:
+          'Architecture défensive Purdue et ISA/IEC 62443 en zones et conduits cloisonnés',
+        zoneIt: 'Zone IT Bureautique',
+        zoneItTier: 'NIVEAU 4–5',
+        zoneItSub1: 'Messagerie, Postes,',
+        zoneItSub2: 'Gestion administrative',
+        dmz: 'DMZ Industrielle',
+        dmzTier: 'ZONE TAMPON',
+        dmzSub1Line1: 'Passerelle télémaintenance',
+        dmzSub1Line2: 'Authentification MFA & session',
+        dmzSub2Line1: 'Sonde de détection passive',
+        dmzSub2Line2: 'Recopie flux non intrusive',
+        isolatedLine1: 'Anomalie détectée',
+        isolatedLine2: 'et confinée dans la DMZ',
+        scada: 'Supervision SCADA',
+        scadaTier: 'NIVEAU 2–3',
+        scadaSub1: 'Contrôle Zero Trust',
+        scadaSub2: 'Moindre privilège',
+        ot: 'Zone OT Terrain',
+        otTier: 'NIVEAU 0–1',
+        otItems: ['Eau potable', 'Énergie', 'Mobilité', 'Bâtiments (GTB)'],
+        vault: 'Sauvegardes hors ligne (immuables) et canal de reprise manuel hors bande',
+        vaultLine1: 'Sauvegardes hors ligne (immuables)',
+        vaultLine2: '& canal de reprise manuel hors bande',
+      }
+    : {
+        statusPetrol: 'OT zone nominal',
+        statusSignal: 'DMZ containment active',
+        ariaTitle:
+          'Purdue and ISA/IEC 62443 defensive architecture in compartmentalized zones and conduits',
+        zoneIt: 'Enterprise IT Zone',
+        zoneItTier: 'LEVEL 4–5',
+        zoneItSub1: 'Email, Workstations,',
+        zoneItSub2: 'Administration',
+        dmz: 'Industrial DMZ',
+        dmzTier: 'BUFFER ZONE',
+        dmzSub1Line1: 'Remote-Maintenance Gateway',
+        dmzSub1Line2: 'MFA & timed session control',
+        dmzSub2Line1: 'Passive Detection Sensor',
+        dmzSub2Line2: 'Non-intrusive traffic mirror',
+        isolatedLine1: 'Anomaly detected',
+        isolatedLine2: '& contained in DMZ',
+        scada: 'SCADA Supervision',
+        scadaTier: 'LEVEL 2–3',
+        scadaSub1: 'Zero Trust Access',
+        scadaSub2: 'Least Privilege',
+        ot: 'Field OT Zone',
+        otTier: 'LEVEL 0–1',
+        otItems: ['Potable Water', 'Power Grid', 'Transit', 'Buildings (BMS)'],
+        vault: 'Verified offline backups (immutable) & out-of-band manual fallback channel',
+        vaultLine1: 'Verified offline backups (immutable)',
+        vaultLine2: '& out-of-band manual fallback channel',
+      };
+---
+
+<figure class="schematic-frame diagram-feature">
+  <div class="schematic-head">
+    <span class="schematic-title">{title}</span>
+    <div class="schematic-badges">
+      <span class="schematic-status schematic-status-petrol">
+        <span class="status-dot status-dot-petrol" aria-hidden="true"></span>
+        <span>{labels.statusPetrol}</span>
+      </span>
+      <span class="schematic-status schematic-status-signal">
+        <span class="status-dot status-dot-signal" aria-hidden="true"></span>
+        <span>{labels.statusSignal}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Desktop Wide Blueprint (viewBox 900x370) -->
+  <svg
+    class="schematic-svg diagram-svg-desktop"
+    viewBox="0 0 900 370"
+    role="img"
+    aria-labelledby="zc-d-title zc-d-desc"
+  >
+    <title id="zc-d-title">{labels.ariaTitle}</title>
+    <desc id="zc-d-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="zc-d-dot-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="10" cy="10" r="0.85" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="zc-d-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="zc-d-glow-signal" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F26357" stop-opacity="0.52" />
+        <stop offset="100%" stop-color="#F26357" stop-opacity="0" />
+      </radialGradient>
+      <radialGradient id="zc-d-glow-petrol" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1F4A4D" stop-opacity="0.72" />
+        <stop offset="100%" stop-color="#1F4A4D" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="8" y="8" width="884" height="354" fill="url(#zc-d-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="8" y="8" width="884" height="354" fill="url(#zc-d-dot-grid)" />
+
+    <rect x="22" y="26" width="182" height="232" fill="#231D19" stroke="#B8A990" stroke-width="1.3" />
+    <line x1="22" y1="26" x2="204" y2="26" stroke="#EDE4D3" stroke-width="3" />
+    <text x="113" y="45" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Mono', monospace" font-size="10.5">
+      {labels.zoneItTier}
+    </text>
+    <text x="113" y="65" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+      {labels.zoneIt}
+    </text>
+    <text x="113" y="86" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Sans', sans-serif" font-size="11">
+      <tspan x="113" dy="0">{labels.zoneItSub1}</tspan>
+      <tspan x="113" dy="15">{labels.zoneItSub2}</tspan>
+    </text>
+    <rect x="42" y="126" width="142" height="34" fill="#1A1512" stroke="#3A2F27" stroke-width="1" />
+    <rect x="42" y="172" width="142" height="34" fill="#1A1512" stroke="#3A2F27" stroke-width="1" />
+    <circle cx="58" cy="143" r="3.5" fill="#B8A990" />
+    <circle cx="58" cy="189" r="3.5" fill="#B8A990" />
+
+    <line x1="204" y1="142" x2="254" y2="142" stroke="#B8A990" stroke-width="2" />
+    <line x1="229" y1="108" x2="229" y2="176" stroke="#EDE4D3" stroke-width="2.6" />
+    <line x1="234" y1="114" x2="234" y2="170" stroke="#CFE3E0" stroke-width="1.2" />
+
+    <rect x="254" y="26" width="242" height="232" fill="#1A1512" stroke="#CFE3E0" stroke-width="1.5" />
+    <line x1="254" y1="26" x2="496" y2="26" stroke="#CFE3E0" stroke-width="3" />
+    <text x="375" y="45" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="10.5">
+      {labels.dmzTier}
+    </text>
+    <text x="375" y="65" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13.5" font-weight="600">
+      {labels.dmz}
+    </text>
+
+    <rect x="270" y="78" width="210" height="46" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.2" />
+    <text x="375" y="97" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11" font-weight="600">
+      <tspan x="375" dy="0">{labels.dmzSub1Line1}</tspan>
+      <tspan x="375" dy="15" fill="#CFE3E0" font-weight="400">{labels.dmzSub1Line2}</tspan>
+    </text>
+
+    <rect x="270" y="134" width="210" height="46" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.2" />
+    <text x="375" y="153" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11" font-weight="600">
+      <tspan x="375" dy="0">{labels.dmzSub2Line1}</tspan>
+      <tspan x="375" dy="15" fill="#CFE3E0" font-weight="400">{labels.dmzSub2Line2}</tspan>
+    </text>
+
+    <circle cx="290" cy="216" r="28" fill="url(#zc-d-glow-signal)" />
+    <circle cx="290" cy="216" r="6" fill="#F26357" />
+    <circle cx="290" cy="216" r="12" fill="none" stroke="#F26357" stroke-dasharray="3 2" stroke-width="1.4" />
+    <text x="312" y="212" fill="#F26357" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="500">
+      <tspan x="312" dy="0">{labels.isolatedLine1}</tspan>
+      <tspan x="312" dy="14">{labels.isolatedLine2}</tspan>
+    </text>
+
+    <line x1="496" y1="142" x2="546" y2="142" stroke="#CFE3E0" stroke-width="2" />
+    <line x1="518" y1="108" x2="518" y2="176" stroke="#F26357" stroke-width="3" />
+    <line x1="524" y1="112" x2="524" y2="172" stroke="#EDE4D3" stroke-width="1.2" />
+
+    <rect x="546" y="26" width="182" height="232" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+    <line x1="546" y1="26" x2="728" y2="26" stroke="#EDE4D3" stroke-width="3" />
+    <text x="637" y="45" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="10.5">
+      {labels.scadaTier}
+    </text>
+    <text x="637" y="65" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+      {labels.scada}
+    </text>
+    <text x="637" y="86" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Sans', sans-serif" font-size="11">
+      <tspan x="637" dy="0">{labels.scadaSub1}</tspan>
+      <tspan x="637" dy="15">{labels.scadaSub2}</tspan>
+    </text>
+    <circle cx="637" cy="176" r="46" fill="url(#zc-d-glow-petrol)" />
+    <circle cx="637" cy="176" r="30" fill="#1A1512" stroke="#CFE3E0" stroke-width="1.8" />
+    <circle cx="637" cy="176" r="19" fill="none" stroke="#CFE3E0" stroke-opacity="0.55" stroke-dasharray="3 3" stroke-width="1" />
+    <circle cx="637" cy="176" r="6.5" fill="#CFE3E0" />
+
+    <line x1="728" y1="142" x2="758" y2="142" stroke="#CFE3E0" stroke-width="2.2" />
+
+    <rect x="758" y="26" width="120" height="232" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+    <line x1="758" y1="26" x2="878" y2="26" stroke="#EDE4D3" stroke-width="3" />
+    <text x="818" y="45" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="10.5">
+      {labels.otTier}
+    </text>
+    <text x="818" y="65" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600">
+      {labels.ot}
+    </text>
+    {labels.otItems.map((item, i) => (
+      <g transform={`translate(768, ${84 + i * 40})`}>
+        <rect width="100" height="28" fill="#1A1512" stroke="#CFE3E0" stroke-opacity="0.65" stroke-width="1" />
+        <circle cx="10" cy="14" r="3" fill="#CFE3E0" />
+        <text x="55" y="18" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11">
+          {item}
+        </text>
+      </g>
+    ))}
+
+    <line x1="637" y1="258" x2="637" y2="290" stroke="#CFE3E0" stroke-dasharray="4 3" stroke-width="1.6" />
+    <line x1="818" y1="258" x2="818" y2="290" stroke="#CFE3E0" stroke-dasharray="4 3" stroke-width="1.6" />
+    <rect x="22" y="290" width="856" height="56" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.4" />
+    <text x="450" y="323" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Mono', monospace" font-size="12">
+      {labels.vault}
+    </text>
+  </svg>
+
+  <!-- Mobile Vertical Purdue Architecture (viewBox 340x764; all <text> >= 12.5 -> >= 11.7px effective) -->
+  <svg
+    class="schematic-svg diagram-svg-mobile"
+    viewBox="0 0 340 764"
+    role="img"
+    aria-labelledby="zc-m-title zc-m-desc"
+    aria-hidden="true"
+  >
+    <title id="zc-m-title">{labels.ariaTitle}</title>
+    <desc id="zc-m-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="zc-m-dot-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+        <circle cx="9" cy="9" r="0.8" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="zc-m-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="zc-m-glow-signal" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F26357" stop-opacity="0.52" />
+        <stop offset="100%" stop-color="#F26357" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="6" y="6" width="328" height="752" fill="url(#zc-m-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="6" y="6" width="328" height="752" fill="url(#zc-m-dot-grid)" />
+
+    <!-- Zone 1: Enterprise IT (Level 4-5) -->
+    <rect x="18" y="18" width="304" height="104" fill="#231D19" stroke="#B8A990" stroke-width="1.3" />
+    <line x1="18" y1="18" x2="322" y2="18" stroke="#EDE4D3" stroke-width="3" />
+    <text x="170" y="39" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+      {labels.zoneItTier}
+    </text>
+    <text x="170" y="62" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="14.5" font-weight="600">
+      {labels.zoneIt}
+    </text>
+    <text x="170" y="85" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Sans', sans-serif" font-size="12.5">
+      <tspan x="170" dy="0">{labels.zoneItSub1}</tspan>
+      <tspan x="170" dy="17">{labels.zoneItSub2}</tspan>
+    </text>
+
+    <!-- Conduit 1: IT -> DMZ Firewall Barrier -->
+    <line x1="170" y1="122" x2="170" y2="158" stroke="#B8A990" stroke-width="2" />
+    <line x1="130" y1="138" x2="210" y2="138" stroke="#EDE4D3" stroke-width="2.6" />
+    <line x1="138" y1="144" x2="202" y2="144" stroke="#CFE3E0" stroke-width="1.2" />
+
+    <!-- Zone 2: Industrial DMZ -->
+    <rect x="18" y="158" width="304" height="214" fill="#1A1512" stroke="#CFE3E0" stroke-width="1.4" />
+    <line x1="18" y1="158" x2="322" y2="158" stroke="#CFE3E0" stroke-width="3" />
+    <text x="170" y="179" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+      {labels.dmzTier}
+    </text>
+    <text x="170" y="201" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="14.5" font-weight="600">
+      {labels.dmz}
+    </text>
+
+    <rect x="30" y="212" width="280" height="48" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.1" />
+    <text x="170" y="232" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600">
+      <tspan x="170" dy="0">{labels.dmzSub1Line1}</tspan>
+      <tspan x="170" dy="17" fill="#CFE3E0" font-weight="400">{labels.dmzSub1Line2}</tspan>
+    </text>
+
+    <rect x="30" y="268" width="280" height="48" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.1" />
+    <text x="170" y="288" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600">
+      <tspan x="170" dy="0">{labels.dmzSub2Line1}</tspan>
+      <tspan x="170" dy="17" fill="#CFE3E0" font-weight="400">{labels.dmzSub2Line2}</tspan>
+    </text>
+
+    <!-- Anomaly containment node inside DMZ -->
+    <circle cx="54" cy="343" r="24" fill="url(#zc-m-glow-signal)" />
+    <circle cx="54" cy="343" r="6" fill="#F26357" />
+    <circle cx="54" cy="343" r="12" fill="none" stroke="#F26357" stroke-dasharray="3 2" stroke-width="1.4" />
+    <text x="78" y="338" fill="#F26357" font-family="'IBM Plex Mono', monospace" font-size="12.5" font-weight="500">
+      <tspan x="78" dy="0">{labels.isolatedLine1}</tspan>
+      <tspan x="78" dy="16">{labels.isolatedLine2}</tspan>
+    </text>
+
+    <!-- Conduit 2: DMZ -> SCADA Double Containment Gate -->
+    <line x1="170" y1="372" x2="170" y2="412" stroke="#CFE3E0" stroke-width="2" />
+    <line x1="126" y1="389" x2="214" y2="389" stroke="#F26357" stroke-width="3" />
+    <line x1="134" y1="395" x2="206" y2="395" stroke="#EDE4D3" stroke-width="1.3" />
+
+    <!-- Zone 3: SCADA Supervision (Level 2-3) -->
+    <rect x="18" y="412" width="304" height="96" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.4" />
+    <line x1="18" y1="412" x2="322" y2="412" stroke="#EDE4D3" stroke-width="3" />
+    <text x="34" y="435" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+      {labels.scadaTier}
+    </text>
+    <text x="34" y="458" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="14.5" font-weight="600">
+      {labels.scada}
+    </text>
+    <text x="34" y="479" fill="#CFE3E0" font-family="'IBM Plex Sans', sans-serif" font-size="12.5">
+      <tspan x="34" dy="0">{labels.scadaSub1}</tspan>
+      <tspan x="34" dy="16">{labels.scadaSub2}</tspan>
+    </text>
+    <circle cx="272" cy="462" r="24" fill="#1A1512" stroke="#CFE3E0" stroke-width="1.6" />
+    <circle cx="272" cy="462" r="14" fill="none" stroke="#CFE3E0" stroke-opacity="0.55" stroke-dasharray="3 3" stroke-width="1" />
+    <circle cx="272" cy="462" r="5" fill="#CFE3E0" />
+
+    <!-- Conduit 3: SCADA -> Field OT -->
+    <line x1="170" y1="508" x2="170" y2="534" stroke="#CFE3E0" stroke-width="2.4" />
+
+    <!-- Zone 4: Field OT Controllers (Level 0-1) -->
+    <rect x="18" y="534" width="304" height="124" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.4" />
+    <line x1="18" y1="534" x2="322" y2="534" stroke="#EDE4D3" stroke-width="3" />
+    <text x="170" y="555" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+      {labels.otTier}
+    </text>
+    <text x="170" y="576" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="14.5" font-weight="600">
+      {labels.ot}
+    </text>
+    {labels.otItems.map((item, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const gx = 28 + col * 146;
+      const gy = 588 + row * 32;
+      return (
+        <g transform={`translate(${gx}, ${gy})`}>
+          <rect width="138" height="26" fill="#1A1512" stroke="#CFE3E0" stroke-opacity="0.65" stroke-width="1" />
+          <circle cx="11" cy="13" r="3" fill="#CFE3E0" />
+          <text x="76" y="17.5" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12.5">
+            {item}
+          </text>
+        </g>
+      );
+    })}
+
+    <!-- Offline Resilient Vault & Manual Fallback Foundation -->
+    <line x1="112" y1="658" x2="112" y2="682" stroke="#CFE3E0" stroke-dasharray="4 3" stroke-width="1.6" />
+    <line x1="228" y1="658" x2="228" y2="682" stroke="#CFE3E0" stroke-dasharray="4 3" stroke-width="1.6" />
+    <rect x="18" y="682" width="304" height="60" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.4" />
+    <text x="170" y="707" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="500">
+      <tspan x="170" dy="0">{labels.vaultLine1}</tspan>
+      <tspan x="170" dy="18">{labels.vaultLine2}</tspan>
+    </text>
+  </svg>
+
+  <figcaption class="schematic-caption">{caption}</figcaption>
+</figure>

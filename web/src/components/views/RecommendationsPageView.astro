@@ -1,0 +1,144 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import StabilizedGridDiagram from '../diagrams/StabilizedGridDiagram.astro';
+import { UI_COPY } from '../../data/site';
+import type { RecommendationsPageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: RecommendationsPageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="recommendations"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <section class="page-header">
+    <div class="wrap">
+      <div class="rubric-line">
+        <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+        <span class="rubric-divider" aria-hidden="true"></span>
+        <span>{data.header.rubricScope}</span>
+        <span class="rubric-time">{data.header.readingTimeSummary}</span>
+      </div>
+
+      <h1>{data.header.h1}</h1>
+      <p class="page-lead">{data.header.subtitle}</p>
+    </div>
+  </section>
+
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+      <p style="margin-top: 1.25rem;"><strong>{data.quickRead.decisionsIntro}</strong></p>
+
+      <div class="horizon-strip">
+        {data.quickRead.decisions.map((item) => (
+          <div class="horizon-cell">
+            <div class="horizon-time">{item.horizon}</div>
+            <h3 class="triptych-title">{item.title}</h3>
+            <RichText tag="p" class="triptych-detail" text={item.detail} lang={lang} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      <div class="governance-split">
+        <div>
+          <h3 style="margin-bottom: 1rem;">{data.deepDive.accountabilityHeading}</h3>
+          {data.deepDive.accountabilityParagraphs.map((p) => (
+            <RichText tag="p" text={p} lang={lang} />
+          ))}
+        </div>
+
+        <StabilizedGridDiagram lang={lang} caption={data.header.visualCaption} />
+      </div>
+
+      <h3 style="margin-bottom: 1.25rem;">{data.deepDive.roadmapHeading}</h3>
+      <div class="roadmap-track">
+        {data.deepDive.horizons.map((h) => (
+          <article id={h.id} class="roadmap-row">
+            <div>
+              <div class="roadmap-timeframe">{h.timeframe}</div>
+              <h4 style="margin-top: 0.45rem; color: var(--color-parchment);">{h.title}</h4>
+            </div>
+            <ul>
+              {h.actions.map((act) => (
+                <RichText tag="li" text={act} lang={lang} />
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <h3 style="margin-bottom: 1.25rem;">{data.deepDive.matrixHeading}</h3>
+      <div class="table-wrap">
+        <table class="editorial-table" role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">{data.deepDive.matrixColumns[0]}</th>
+              <th role="columnheader" scope="col">{data.deepDive.matrixColumns[1]}</th>
+              <th role="columnheader" scope="col">{data.deepDive.matrixColumns[2]}</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {data.deepDive.matrixRows.map((row) => (
+              <tr role="row">
+                <td role="cell" data-label={data.deepDive.matrixColumns[0]}>
+                  <RichText text={row.question} lang={lang} />
+                </td>
+                <td role="cell" data-label={data.deepDive.matrixColumns[1]}>
+                  <RichText text={row.action} lang={lang} />
+                </td>
+                <td role="cell" data-label={data.deepDive.matrixColumns[2]}>
+                  <RichText text={row.standard} lang={lang} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <aside class="conclusion-frame">
+        <h3>{data.deepDive.conclusionHeading}</h3>
+        <RichText tag="p" text={data.deepDive.conclusionText} lang={lang} />
+      </aside>
+    </div>
+  </section>
+
+  <section class="transition-strip" data-depth="deep">
+    <div class="wrap transition-box">
+      <div>
+        <h3>{data.deepDive.finalStepLabel}</h3>
+        <p style="margin-top: 0.45rem; color: var(--color-parchment-dim);">
+          {data.deepDive.finalStep.description}
+        </p>
+      </div>
+      <a class="btn btn-primary" href={withBase(data.deepDive.finalStep.href)}>
+        <span class="btn-title">{data.deepDive.finalStep.label}</span>
+        <span class="btn-sub">{data.deepDive.finalStep.description}</span>
+      </a>
+    </div>
+  </section>
+</SiteLayout>

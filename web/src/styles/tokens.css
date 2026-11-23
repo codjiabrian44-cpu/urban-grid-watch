@@ -1,0 +1,42 @@
+:root {
+  /* EXACT PALETTE — Investigation Dossier Meets Newspaper Front Page */
+  --color-ink: #1a1512;
+  --color-ink-raised: #231d19;
+  --color-parchment: #ede4d3;
+  --color-parchment-dim: #b8a990;
+  --color-petrol: #1f4a4d;
+  --color-petrol-text: #cfe3e0;
+  --color-signal: #f26357;
+  --color-rule: #3a2f27;
+
+  /* Typography families (self-hosted via @fontsource/*) */
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Assertive Newspaper & Dossier Type Scale */
+  --text-xs: 0.8125rem; /* 13px */
+  --text-sm: 0.9375rem; /* 15px */
+  --text-base: 1.03125rem; /* 16.5px */
+  --text-lg: 1.25rem; /* 20px */
+  --text-xl: clamp(1.4rem, 2.15vw, 1.8rem);
+  --text-quote: clamp(1.55rem, 2.65vw, 2.35rem);
+  --text-h2: clamp(1.95rem, 3.3vw, 2.95rem);
+  --text-h1: clamp(3.15rem, 6vw, 5.5rem);
+  --text-stat: clamp(2.6rem, 5vw, 4.35rem);
+  --text-monument: clamp(3.85rem, 8vw, 6.75rem);
+
+  /* Layout & tighter editorial measure */
+  --measure: 56ch;
+  --container-max: 85rem; /* 1360px */
+  --gutter: clamp(1.125rem, 3vw, 2.5rem);
+  --section-gap: clamp(3.25rem, 6vw, 5.75rem);
+  --radius-btn: 2px;
+  --radius-sharp: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}

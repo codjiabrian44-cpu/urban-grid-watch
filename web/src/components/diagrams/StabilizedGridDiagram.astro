@@ -1,0 +1,193 @@
+---
+import type { Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  caption: string;
+}
+
+const { lang, caption } = Astro.props;
+
+const labels =
+  lang === 'fr'
+    ? {
+        title: 'Grille urbaine stabilisée sous gouvernance unifiée',
+        badge: 'Résilience vérifiée',
+        ariaTitle: 'Schéma de gouvernance municipale stabilisée pour quatre domaines critiques',
+        topBar: 'Gouvernance exécutive : NIST CSF 2.0 (Gouverner) & NIS 2',
+        topBarLine1: 'Gouvernance exécutive :',
+        topBarLine2: 'NIST CSF 2.0 (Gouverner) & NIS 2',
+        domains: ['Eau potable', 'Énergie', 'Mobilité', 'Bâtiments'],
+        checks: ['Référent désigné', 'Barrière IT/OT', 'Mode dégradé'],
+      }
+    : {
+        title: 'Stabilized Urban Grid Under Unified Governance',
+        badge: 'Verified resilience',
+        ariaTitle: 'Unified municipal governance diagram across four critical service domains',
+        topBar: 'Executive Governance: NIST CSF 2.0 (Govern) & NIS 2',
+        topBarLine1: 'Executive Governance:',
+        topBarLine2: 'NIST CSF 2.0 (Govern) & NIS 2',
+        domains: ['Water', 'Power', 'Transit', 'Buildings'],
+        checks: ['Named Owner', 'IT/OT Boundary', 'Tested Fallback'],
+      };
+---
+
+<figure class="schematic-frame">
+  <div class="schematic-head">
+    <span class="schematic-title">{labels.title}</span>
+    <span class="schematic-status schematic-status-petrol">
+      <span class="status-dot status-dot-petrol" aria-hidden="true"></span>
+      <span>{labels.badge}</span>
+    </span>
+  </div>
+
+  <!-- Desktop 4-Column Stabilized Governance Plate (viewBox 560x320; all <text> >= 11 -> >= 11.6px effective) -->
+  <svg
+    class="schematic-svg diagram-svg-desktop"
+    viewBox="0 0 560 320"
+    role="img"
+    aria-labelledby="sg-d-title sg-d-desc"
+  >
+    <title id="sg-d-title">{labels.ariaTitle}</title>
+    <desc id="sg-d-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="sg-d-dot-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+        <circle cx="9" cy="9" r="0.8" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="sg-d-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="sg-d-petrol-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1F4A4D" stop-opacity="0.72" />
+        <stop offset="100%" stop-color="#1F4A4D" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="8" y="8" width="544" height="304" fill="url(#sg-d-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="8" y="8" width="544" height="304" fill="url(#sg-d-dot-grid)" />
+
+    <ellipse cx="280" cy="185" rx="238" ry="96" fill="none" stroke="#3A2F27" stroke-width="1" stroke-dasharray="4 4" />
+    <ellipse cx="280" cy="46" rx="190" ry="34" fill="url(#sg-d-petrol-glow)" />
+
+    <rect x="20" y="22" width="520" height="46" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+    <line x1="20" y1="22" x2="540" y2="22" stroke="#EDE4D3" stroke-width="2.5" />
+    <text x="280" y="50" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+      {labels.topBar}
+    </text>
+
+    {[82, 214, 346, 478].map((cx) => (
+      <g>
+        <line x1={cx} y1="68" x2={cx} y2="110" stroke="#1F4A4D" stroke-width="5" />
+        <line x1={cx} y1="68" x2={cx} y2="110" stroke="#CFE3E0" stroke-width="1.4" />
+        <circle cx={cx} cy="68" r="3.5" fill="#EDE4D3" />
+      </g>
+    ))}
+
+    {labels.domains.map((domain, idx) => {
+      const x = 20 + idx * 132;
+      return (
+        <g transform={`translate(${x}, 110)`}>
+          <rect width="124" height="182" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.35" />
+          <line x1="0" y1="0" x2="124" y2="0" stroke="#EDE4D3" stroke-width="2.5" />
+          <text x="62" y="27" text-anchor="middle" fill="#EDE4D3" font-family="'Newsreader', Georgia, serif" font-size="15" font-weight="500">
+            {domain}
+          </text>
+          <line x1="12" y1="42" x2="112" y2="42" stroke="#CFE3E0" stroke-opacity="0.35" stroke-width="1" />
+          {labels.checks.map((chk, cIdx) => {
+            const pipColor = cIdx === 1 ? '#F26357' : cIdx === 2 ? '#CFE3E0' : '#EDE4D3';
+            return (
+              <g transform={`translate(10, ${62 + cIdx * 38})`}>
+                <circle cx="6" cy="5" r="7" fill="#1A1512" fill-opacity="0.55" />
+                <circle cx="6" cy="5" r="3.8" fill={pipColor} />
+                <text x="18" y="9" fill="#CFE3E0" font-family="'IBM Plex Sans', sans-serif" font-size="11">
+                  {chk}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+      );
+    })}
+  </svg>
+
+  <!-- Mobile 2x2 Stabilized Governance Grid (viewBox 340x436; all <text> >= 12.5 -> >= 11.7px effective) -->
+  <svg
+    class="schematic-svg diagram-svg-mobile"
+    viewBox="0 0 340 436"
+    role="img"
+    aria-labelledby="sg-m-title sg-m-desc"
+    aria-hidden="true"
+  >
+    <title id="sg-m-title">{labels.ariaTitle}</title>
+    <desc id="sg-m-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="sg-m-dot-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+        <circle cx="9" cy="9" r="0.8" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="sg-m-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="sg-m-petrol-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1F4A4D" stop-opacity="0.72" />
+        <stop offset="100%" stop-color="#1F4A4D" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="6" y="6" width="328" height="424" fill="url(#sg-m-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="6" y="6" width="328" height="424" fill="url(#sg-m-dot-grid)" />
+
+    <ellipse cx="170" cy="46" rx="140" ry="30" fill="url(#sg-m-petrol-glow)" />
+
+    <!-- Top Executive Governance Hub -->
+    <rect x="16" y="18" width="308" height="58" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.4" />
+    <line x1="16" y1="18" x2="324" y2="18" stroke="#EDE4D3" stroke-width="2.5" />
+    <text x="170" y="42" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+      <tspan x="170" dy="0">{labels.topBarLine1}</tspan>
+      <tspan x="170" dy="18" fill="#CFE3E0" font-weight="500">{labels.topBarLine2}</tspan>
+    </text>
+
+    <!-- Trunks connecting Executive Hub to 2x2 Vaults -->
+    <line x1="89" y1="76" x2="89" y2="272" stroke="#1F4A4D" stroke-width="5" />
+    <line x1="89" y1="76" x2="89" y2="272" stroke="#CFE3E0" stroke-width="1.3" />
+    <line x1="251" y1="76" x2="251" y2="272" stroke="#1F4A4D" stroke-width="5" />
+    <line x1="251" y1="76" x2="251" y2="272" stroke="#CFE3E0" stroke-width="1.3" />
+    <circle cx="89" cy="76" r="3.5" fill="#EDE4D3" />
+    <circle cx="251" cy="76" r="3.5" fill="#EDE4D3" />
+
+    <!-- 2x2 Domain Vault Cards -->
+    {labels.domains.map((domain, idx) => {
+      const col = idx % 2;
+      const row = Math.floor(idx / 2);
+      const x = 16 + col * 162;
+      const y = 104 + row * 164;
+      return (
+        <g transform={`translate(${x}, ${y})`}>
+          <rect width="146" height="148" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.35" />
+          <line x1="0" y1="0" x2="146" y2="0" stroke="#EDE4D3" stroke-width="2.5" />
+          <text x="73" y="28" text-anchor="middle" fill="#EDE4D3" font-family="'Newsreader', Georgia, serif" font-size="15.5" font-weight="500">
+            {domain}
+          </text>
+          <line x1="10" y1="41" x2="136" y2="41" stroke="#CFE3E0" stroke-opacity="0.35" stroke-width="1" />
+          {labels.checks.map((chk, cIdx) => {
+            const pipColor = cIdx === 1 ? '#F26357' : cIdx === 2 ? '#CFE3E0' : '#EDE4D3';
+            return (
+              <g transform={`translate(10, ${58 + cIdx * 31})`}>
+                <circle cx="6" cy="5" r="7" fill="#1A1512" fill-opacity="0.55" />
+                <circle cx="6" cy="5" r="3.8" fill={pipColor} />
+                <text x="19" y="9" fill="#CFE3E0" font-family="'IBM Plex Sans', sans-serif" font-size="12.5">
+                  {chk}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+      );
+    })}
+  </svg>
+
+  <figcaption class="schematic-caption">{caption}</figcaption>
+</figure>

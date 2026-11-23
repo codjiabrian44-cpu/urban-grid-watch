@@ -1,0 +1,143 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import ZonesConduitsDiagram from '../diagrams/ZonesConduitsDiagram.astro';
+import { UI_COPY } from '../../data/site';
+import type { DefenseFrameworkPageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: DefenseFrameworkPageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+const p12 = data.deepDive.pillars.slice(0, 2);
+const p3 = data.deepDive.pillars[2];
+const p45 = data.deepDive.pillars.slice(3, 5);
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="defenseFramework"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <section class="page-header">
+    <div class="wrap">
+      <div class="rubric-line">
+        <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+        <span class="rubric-divider" aria-hidden="true"></span>
+        <span>{data.header.rubricScope}</span>
+        <span class="rubric-time">{data.header.readingTimeSummary}</span>
+      </div>
+
+      <h1>{data.header.h1}</h1>
+      <p class="page-lead">{data.header.subtitle}</p>
+    </div>
+  </section>
+
+  <!-- Quick Read: Dense 5-Pillar Newspaper Strip -->
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+
+      <div class="five-strip">
+        {data.quickRead.measures.map((m) => (
+          <div class="five-cell">
+            <div class="five-num">{m.num}</div>
+            <h3 class="five-title">{m.title}</h3>
+            <RichText tag="p" class="five-detail" text={m.detail} lang={lang} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Deep Dive: Full-Width Blueprint + Varied Pillar Architecture -->
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      <ZonesConduitsDiagram
+        lang={lang}
+        title={data.deepDive.diagramTitle}
+        caption={data.deepDive.diagramCaption}
+      />
+
+      <div class="pillar-grid-duo">
+        {p12.map((pillar) => (
+          <article id={pillar.id} class="pillar-card-arch">
+            <div class="quadrant-code">{pillar.shortTitle}</div>
+            <h3>{pillar.heading}</h3>
+            <RichText tag="p" text={pillar.intro} lang={lang} />
+            {pillar.subIntro && <RichText tag="p" text={pillar.subIntro} lang={lang} />}
+            <ul style="margin-top: 1rem;">
+              {pillar.bullets.map((b) => (
+                <RichText tag="li" text={b} lang={lang} />
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <!-- One Large Typographic Moment in Newsreader: Pillar 03 Spotlight -->
+      {p3 && (
+        <article id={p3.id} class="pillar-feature-band">
+          <div>
+            <div class="monument-figure" aria-hidden="true">03</div>
+            <h3 style="margin-top: 0.75rem;">{p3.heading}</h3>
+            <RichText tag="p" class="pillar-feature-quote" text={p3.intro} lang={lang} />
+          </div>
+          <div>
+            <ul>
+              {p3.bullets.map((b) => (
+                <RichText tag="li" text={b} lang={lang} />
+              ))}
+            </ul>
+          </div>
+        </article>
+      )}
+
+      <div class="pillar-grid-duo">
+        {p45.map((pillar) => (
+          <article id={pillar.id} class="pillar-card-arch">
+            <div class="quadrant-code">{pillar.shortTitle}</div>
+            <h3>{pillar.heading}</h3>
+            <RichText tag="p" text={pillar.intro} lang={lang} />
+            {pillar.subIntro && <RichText tag="p" text={pillar.subIntro} lang={lang} />}
+            <ul style="margin-top: 1rem;">
+              {pillar.bullets.map((b) => (
+                <RichText tag="li" text={b} lang={lang} />
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="transition-strip" data-depth="deep">
+    <div class="wrap transition-box">
+      <div>
+        <h3>{data.deepDive.transitionHeading}</h3>
+        <p style="margin-top: 0.45rem; color: var(--color-parchment-dim);">
+          {data.deepDive.transitionText}
+        </p>
+      </div>
+      <a class="btn btn-primary" href={withBase(data.deepDive.nextStep.href)}>
+        <span class="btn-title">{data.deepDive.nextStep.label}</span>
+        <span class="btn-sub">{data.deepDive.nextStep.description}</span>
+      </a>
+    </div>
+  </section>
+</SiteLayout>

@@ -1,0 +1,44 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { withBase } from '../utils/format';
+
+const frHref = withBase('/fr/');
+const enHref = withBase('/en/');
+const canonicalFr = Astro.site ? new URL(frHref, Astro.site).toString() : frHref;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Failles invisibles — Cybersécurité des infrastructures urbaines</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='1' width='14' height='14' fill='%231F4A4D' stroke='%23CFE3E0' stroke-width='2'/%3E%3C/svg%3E"
+    />
+    <meta http-equiv="refresh" content={`0; url=${frHref}`} />
+    <link rel="canonical" href={canonicalFr} />
+  </head>
+  <body>
+    <main class="wrap" style="padding-block: 5rem;">
+      <p class="rubric-prefix" style="margin-bottom: 0.75rem;">Dossier documentaire</p>
+      <h1>Failles invisibles</h1>
+      <p class="page-lead">
+        Cybersécurité des infrastructures urbaines — Redirection vers l’édition française.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={frHref} hreflang="fr">
+          <span class="btn-title">Accéder au dossier (Français)</span>
+          <span class="btn-sub">/fr/ — Édition principale</span>
+        </a>
+        <a class="btn btn-secondary" href={enHref} lang="en" hreflang="en">
+          <span class="btn-title">Read in English</span>
+          <span class="btn-sub">/en/ — Secondary edition</span>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

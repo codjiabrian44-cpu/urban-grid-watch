@@ -1,0 +1,187 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import { UI_COPY } from '../../data/site';
+import type { CaseStudiesPageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: CaseStudiesPageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="caseStudies"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <section class="page-header">
+    <div class="wrap">
+      <div class="rubric-line">
+        <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+        <span class="rubric-divider" aria-hidden="true"></span>
+        <span>{data.header.rubricScope}</span>
+        <span class="rubric-time">{data.header.readingTimeSummary}</span>
+      </div>
+
+      <h1>{data.header.h1}</h1>
+      <p class="page-lead">{data.header.subtitle}</p>
+
+      <aside class="safety-notice">
+        <strong>{data.header.safetyNoticeLabel}{lang === 'fr' ? ' : ' : ': '}</strong>
+        <span>{data.header.safetyNoticeText}</span>
+      </aside>
+    </div>
+  </section>
+
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+
+      <div class="benchmark-split">
+        {data.quickRead.items.map((item) => (
+          <div class="benchmark-col">
+            <div class="quadrant-code">{item.period}</div>
+            <h3>{item.title}</h3>
+            <div class="benchmark-stat">{item.metric}</div>
+            <RichText tag="p" text={item.summary} lang={lang} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      {data.deepDive.cases.map((cs, csIdx) => (
+        <article id={cs.id} class={`case-dossier ${csIdx === 1 ? 'case-dossier-alt' : ''}`}>
+          <div class="case-head">
+            <div>
+              <div class="quadrant-code">{cs.period}</div>
+              <h3>{cs.heading}</h3>
+            </div>
+            <div class="case-stat-box">
+              <div class="case-stat-num">{cs.metricValue}</div>
+              <div class="case-stat-unit">{cs.metricUnit}</div>
+            </div>
+          </div>
+
+          <div class="case-body-grid">
+            <div>
+              <h4 style="margin-bottom: 1rem; color: var(--color-parchment-dim);">
+                {cs.timelineHeading}
+              </h4>
+              <div class="timeline-spine">
+                {cs.timeline.map((node) => (
+                  <div class="timeline-node">
+                    <div class="timeline-date">{node.date}</div>
+                    <RichText tag="div" class="timeline-text" text={node.event} lang={lang} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div class="case-subblock">
+                <h4>{cs.contextHeading}</h4>
+                {cs.contextParagraphs.map((p) => (
+                  <RichText tag="p" text={p} lang={lang} />
+                ))}
+              </div>
+
+              <div class="case-subblock">
+                <h4>{cs.impactHeading}</h4>
+                <ul>
+                  {cs.impactItems.map((imp) => (
+                    <RichText tag="li" text={imp} lang={lang} />
+                  ))}
+                </ul>
+              </div>
+
+              <div class="case-subblock">
+                <h4>{cs.lessonsHeading}</h4>
+                {cs.lessonsIntro && <RichText tag="p" text={cs.lessonsIntro} lang={lang} />}
+                <ol>
+                  {cs.lessons.slice(0, cs.lessons.length - 1).map((lesson) => (
+                    <RichText tag="li" text={lesson} lang={lang} />
+                  ))}
+                </ol>
+                <blockquote class={`pull-quote ${csIdx === 0 ? 'pull-quote-petrol' : ''}`}>
+                  <div class="pull-quote-meta" style={csIdx === 0 ? 'color: var(--color-petrol-text);' : ''}>
+                    0{cs.lessons.length}
+                  </div>
+                  <RichText
+                    tag="p"
+                    class="pull-quote-text"
+                    text={cs.lessons[cs.lessons.length - 1]}
+                    lang={lang}
+                  />
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <div style="margin-top: 3.5rem;">
+        <h3 style="margin-bottom: 1.25rem;">{data.deepDive.comparisonHeading}</h3>
+        <div class="table-wrap">
+          <table class="editorial-table" role="table">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" scope="col">{data.deepDive.comparisonColumns[0]}</th>
+                <th role="columnheader" scope="col">{data.deepDive.comparisonColumns[1]}</th>
+                <th role="columnheader" scope="col">{data.deepDive.comparisonColumns[2]}</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {data.deepDive.comparisonRows.map((row) => (
+                <tr role="row">
+                  <td role="cell" data-label={data.deepDive.comparisonColumns[0]}>
+                    <RichText text={row.criterion} lang={lang} />
+                  </td>
+                  <td role="cell" data-label={data.deepDive.comparisonColumns[1]}>
+                    <RichText text={row.stuxnet} lang={lang} />
+                  </td>
+                  <td role="cell" data-label={data.deepDive.comparisonColumns[2]}>
+                    <RichText text={row.ukraine} lang={lang} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="transition-strip" data-depth="deep">
+    <div class="wrap transition-box">
+      <div>
+        <h3>{data.deepDive.nextStepLabel}</h3>
+        <p style="margin-top: 0.45rem; color: var(--color-parchment-dim);">
+          {data.deepDive.nextStep.description}
+        </p>
+      </div>
+      <a class="btn btn-primary" href={withBase(data.deepDive.nextStep.href)}>
+        <span class="btn-title">{data.deepDive.nextStep.label}</span>
+        <span class="btn-sub">{data.deepDive.nextStep.description}</span>
+      </a>
+    </div>
+  </section>
+</SiteLayout>

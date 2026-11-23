@@ -1,0 +1,127 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import { UI_COPY } from '../../data/site';
+import { SOURCES_BY_LANG } from '../../data/sources';
+import type { SourcesPageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: SourcesPageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+const sources = SOURCES_BY_LANG[lang];
+const sealLabel =
+  lang === 'fr'
+    ? 'sources publiques vérifiées · 0 affirmation non sourcée'
+    : 'verified public sources · 0 unsourced claims';
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="sources"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <section class="page-header">
+    <div class="wrap sources-header-split">
+      <div>
+        <div class="rubric-line">
+          <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+          <span class="rubric-divider" aria-hidden="true"></span>
+          <span>{data.header.rubricScope}</span>
+          <span class="rubric-time">{data.header.readingTimeSummary}</span>
+        </div>
+
+        <h1>{data.header.h1}</h1>
+        <p class="page-lead">{data.header.subtitle}</p>
+      </div>
+
+      <!-- One Large Typographic Moment: 13 / 13 Archival Integrity Seal -->
+      <aside class="archival-seal">
+        <div class="archival-seal-num">{sources.length} / {sources.length}</div>
+        <div class="archival-seal-label">{sealLabel}</div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+
+      <div class="commitments-grid">
+        {data.quickRead.commitments.map((c) => (
+          <RichText tag="p" text={c} lang={lang} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      <div style="margin-bottom: 3rem;">
+        <h3 style="margin-bottom: 1rem;">{data.deepDive.methodologyHeading}</h3>
+        <ul>
+          {data.deepDive.principles.map((p) => (
+            <RichText tag="li" text={p} lang={lang} />
+          ))}
+        </ul>
+      </div>
+
+      <h3>{data.deepDive.bibliographyHeading}</h3>
+
+      {data.deepDive.groups.map((grp) => {
+        const groupEntries = sources.filter((s) => s.group === grp.id);
+        return (
+          <div class="bib-group">
+            <h4>{grp.heading}</h4>
+            <ol class="source-list">
+              {groupEntries.map((entry) => (
+                <li id={entry.anchor} class="source-entry" tabindex="-1">
+                  <div class="source-id">[{entry.id}]</div>
+                  <div>
+                    <RichText tag="div" text={entry.citation} lang={lang} />
+                    <div class="source-links">
+                      {entry.links.map((lnk) => (
+                        <a
+                          class="source-ext-link"
+                          href={lnk.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {lnk.label}: {lnk.url}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        );
+      })}
+
+      <div class="signpost-panel">
+        <h3>{data.deepDive.returnHeading}</h3>
+        <div class="signpost-links" style="margin-top: 1rem;">
+          {data.deepDive.returnLinks.map((lnk) => (
+            <a href={withBase(lnk.href)}>{lnk.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

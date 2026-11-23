@@ -1,0 +1,16 @@
+---
+import { formatRichText, type Lang } from '../utils/format';
+
+interface Props {
+  text: string;
+  lang: Lang;
+  tag?: 'p' | 'span' | 'li' | 'div';
+  class?: string;
+}
+
+const { text, lang, tag = 'span', class: className } = Astro.props;
+const html = formatRichText(text, lang);
+const Tag = tag;
+---
+
+<Tag class={className} set:html={html} />

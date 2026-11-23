@@ -1,0 +1,181 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import GridVisual from '../diagrams/GridVisual.astro';
+import { UI_COPY } from '../../data/site';
+import type { HomePageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: HomePageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="home"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <!-- Front-Page Hero -->
+  <section class="page-header">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="rubric-line">
+          <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+          <span class="rubric-divider" aria-hidden="true"></span>
+          <span>{data.header.rubricScope}</span>
+          <span class="rubric-time">{data.header.readingTimeSummary}</span>
+        </div>
+
+        <h1>{data.header.h1}</h1>
+        <p class="hero-thesis">{data.header.subtitle}</p>
+
+        <div class="btn-row">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-set-depth="quick"
+            data-scroll-target="quick-read"
+          >
+            <span class="btn-title">{data.header.ctaQuickLabel}</span>
+            <span class="btn-sub">{data.header.ctaQuickHint}</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-set-depth="deep"
+            data-scroll-target="deep-dive"
+          >
+            <span class="btn-title">{data.header.ctaDeepLabel}</span>
+            <span class="btn-sub">{data.header.ctaDeepHint}</span>
+          </button>
+        </div>
+      </div>
+
+      <GridVisual
+        lang={lang}
+        caption={data.header.visualCaption}
+        nominalLabel={data.header.visualStateNominal}
+        scrollLabel={data.header.visualStateScroll}
+      />
+    </div>
+  </section>
+
+  <!-- Quick Read: Dense Broadsheet Triptych -->
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+      <RichText tag="p" text={data.quickRead.bridge} lang={lang} />
+
+      <div class="triptych-grid">
+        {data.quickRead.factors.map((factor) => (
+          <div class="triptych-cell">
+            <div class="triptych-num">{factor.num}</div>
+            <h3 class="triptych-title">{factor.title}</h3>
+            <RichText tag="p" class="triptych-detail" text={factor.detail} lang={lang} />
+          </div>
+        ))}
+      </div>
+
+      <RichText tag="p" text={data.quickRead.outro} lang={lang} />
+    </div>
+  </section>
+
+  <!-- Deep Dive: Breathing Essay + IT/OT Petrol Contrast + Newspaper Pull Quote -->
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      <div class="dossier-split">
+        <aside class="sticky-rail" aria-label={ui.homeIndexLabel}>
+          <ul class="rail-list">
+            {data.deepDive.sections.map((sec) => (
+              <li>
+                <a href={`#${sec.id}`}>{sec.shortTitle}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <div class="prose-stack">
+          {data.deepDive.sections.map((sec) => (
+            <section id={sec.id}>
+              <h3>{sec.heading}</h3>
+              {sec.paragraphs.map((p) => (
+                <RichText tag="p" text={p} lang={lang} />
+              ))}
+
+              {sec.bullets && (sec.id === 'convergence-it-ot' || sec.id === 'it-ot-convergence') ? (
+                <div class="it-ot-contrast">
+                  {sec.bullets.map((b, bIdx) => (
+                    <div class={`contrast-plaque ${bIdx === 1 ? 'contrast-plaque-ot' : ''}`}>
+                      <div class="contrast-kicker">
+                        {bIdx === 0
+                          ? lang === 'fr'
+                            ? 'SPHÈRE 01 · INFORMATIQUE (IT)'
+                            : 'SPHERE 01 · ENTERPRISE (IT)'
+                          : lang === 'fr'
+                            ? 'SPHÈRE 02 · TERRAIN (OT)'
+                            : 'SPHERE 02 · OPERATIONAL (OT)'}
+                      </div>
+                      <RichText tag="p" text={b} lang={lang} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                sec.bullets && (
+                  <ul>
+                    {sec.bullets.map((b) => (
+                      <RichText tag="li" text={b} lang={lang} />
+                    ))}
+                  </ul>
+                )
+              )}
+
+              {sec.closingParagraph && (
+                <blockquote class="pull-quote">
+                  <RichText tag="p" class="pull-quote-text" text={sec.closingParagraph} lang={lang} />
+                </blockquote>
+              )}
+            </section>
+          ))}
+
+          <div class="signpost-panel">
+            <h3>{data.deepDive.signpostsHeading}</h3>
+            <p style="margin-top: 0.75rem;">
+              <a href={withBase(data.deepDive.nextStep.href)}>
+                <strong>{data.deepDive.nextStep.label}</strong>
+              </a>
+              {' — '}
+              <span>{data.deepDive.nextStep.description}</span>
+            </p>
+            <div class="signpost-links">
+              <span style="color: var(--color-parchment-dim); font-size: var(--text-sm);">
+                {data.deepDive.directAccessLabel}:
+              </span>
+              {data.deepDive.directAccessLinks.map((lnk) => (
+                <a href={withBase(lnk.href)} style="font-size: var(--text-sm);">
+                  {lnk.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

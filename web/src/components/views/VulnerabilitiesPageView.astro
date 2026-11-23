@@ -1,0 +1,144 @@
+---
+import SiteLayout from '../SiteLayout.astro';
+import RichText from '../RichText.astro';
+import ClusterMatrixDiagram from '../diagrams/ClusterMatrixDiagram.astro';
+import { UI_COPY } from '../../data/site';
+import type { VulnerabilitiesPageData } from '../../data/types';
+import { withBase, type Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  data: VulnerabilitiesPageData;
+}
+
+const { lang, data } = Astro.props;
+const ui = UI_COPY[lang];
+const row1 = data.deepDive.categories.slice(0, 2);
+const row2 = data.deepDive.categories.slice(2, 4);
+---
+
+<SiteLayout
+  lang={lang}
+  pageKey="vulnerabilities"
+  title={data.metaTitle}
+  description={data.metaDescription}
+>
+  <section class="page-header">
+    <div class="wrap vuln-header-split">
+      <div>
+        <div class="rubric-line">
+          <span class="rubric-prefix">{data.header.rubricPrefix}</span>
+          <span class="rubric-divider" aria-hidden="true"></span>
+          <span>{data.header.rubricScope}</span>
+          <span class="rubric-time">{data.header.readingTimeSummary}</span>
+        </div>
+
+        <h1>{data.header.h1}</h1>
+        <p class="page-lead">{data.header.subtitle}</p>
+      </div>
+
+      <ClusterMatrixDiagram lang={lang} caption={data.header.visualCaption} />
+    </div>
+  </section>
+
+  <!-- Quick Read Matrix + Monumental 4-Axis Callout -->
+  <section id="quick-read" class="band band-surface" data-depth="quick">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.quickRead.heading}</h2>
+        <span class="band-tag">{ui.quickReadTag}</span>
+      </div>
+
+      <RichText tag="p" text={data.quickRead.intro} lang={lang} />
+
+      <div class="table-wrap" style="margin-top: 1.75rem;">
+        <table class="editorial-table" role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">{data.quickRead.columns[0]}</th>
+              <th role="columnheader" scope="col">{data.quickRead.columns[1]}</th>
+              <th role="columnheader" scope="col">{data.quickRead.columns[2]}</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {data.quickRead.rows.map((row) => (
+              <tr role="row">
+                <td role="cell" data-label={data.quickRead.columns[0]}>
+                  <RichText text={row.category} lang={lang} />
+                </td>
+                <td role="cell" data-label={data.quickRead.columns[1]}>
+                  <RichText text={row.nature} lang={lang} />
+                </td>
+                <td role="cell" data-label={data.quickRead.columns[2]}>
+                  <RichText text={row.example} lang={lang} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <aside class="monument-callout">
+        <div class="monument-figure" aria-hidden="true">4</div>
+        <RichText tag="div" class="monument-body" text={data.quickRead.takeaway} lang={lang} />
+      </aside>
+    </div>
+  </section>
+
+  <!-- Deep Dive: Staggered Asymmetric Broadsheet Quadrants (Petrol & Warm Ink Alternating) -->
+  <section id="deep-dive" class="band band-breathing" data-depth="deep">
+    <div class="wrap">
+      <div class="band-header">
+        <h2>{data.deepDive.heading}</h2>
+        <span class="band-tag">{ui.deepDiveTag}</span>
+      </div>
+
+      <div class="quadrant-rows">
+        <div class="quadrant-row-wide-left">
+          {row1.map((cat, idx) => (
+            <article id={cat.id} class={`quadrant-cell ${idx === 0 ? 'quadrant-cell-petrol' : ''}`}>
+              <div class="quadrant-code">{cat.code}</div>
+              <h3>{cat.heading}</h3>
+              <RichText tag="p" text={cat.intro} lang={lang} />
+              <ul>
+                {cat.items.map((item) => (
+                  <RichText tag="li" text={item} lang={lang} />
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+
+        <div class="quadrant-row-wide-right">
+          {row2.map((cat, idx) => (
+            <article id={cat.id} class={`quadrant-cell ${idx === 1 ? 'quadrant-cell-petrol' : ''}`}>
+              <div class="quadrant-code">{cat.code}</div>
+              <h3>{cat.heading}</h3>
+              <RichText tag="p" text={cat.intro} lang={lang} />
+              <ul>
+                {cat.items.map((item) => (
+                  <RichText tag="li" text={item} lang={lang} />
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="transition-strip" data-depth="deep">
+    <div class="wrap transition-box">
+      <div>
+        <h3>{data.deepDive.transitionHeading}</h3>
+        <p style="margin-top: 0.5rem; color: var(--color-parchment-dim);">
+          {data.deepDive.transitionText}
+        </p>
+      </div>
+      <a class="btn btn-primary" href={withBase(data.deepDive.nextStep.href)}>
+        <span class="btn-title">{data.deepDive.nextStep.label}</span>
+        <span class="btn-sub">{data.deepDive.nextStep.description}</span>
+      </a>
+    </div>
+  </section>
+</SiteLayout>

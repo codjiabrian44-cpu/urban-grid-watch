@@ -1,0 +1,419 @@
+---
+import type { Lang } from '../../utils/format';
+
+interface Props {
+  lang: Lang;
+  caption: string;
+  nominalLabel: string;
+  scrollLabel: string;
+}
+
+const { lang, caption, nominalLabel, scrollLabel } = Astro.props;
+
+const copy =
+  lang === 'fr'
+    ? {
+        title: "Moniteur d'intégrité — Grille urbaine surveillée",
+        badgeNominal: '4 services nominaux',
+        badgeIsolated: '1 nœud isolé',
+        badgeStandby: 'État nominal',
+        toggleAria: 'Basculer la visualisation entre l’état nominal et l’anomalie isolée',
+        ariaTitle: "Schéma du réseau urbain surveillé avec isolement préventif d'une anomalie",
+        hub: 'Supervision municipale',
+        hubSub: 'Télémétrie passive',
+        water: 'Eau potable',
+        power: 'Énergie & réseau',
+        transit: 'Mobilité & feux',
+        buildings: 'Bâtiments publics',
+        remote: 'Nœud télémaintenance',
+        isolated: 'Isolement actif',
+        nominalNodeState: 'Liaison surveillée',
+        legendNominal: 'Service nominal surveillé',
+        legendWatch: 'Périmètre de référence',
+        legendAlert: 'Anomalie détectée et confinée',
+      }
+    : {
+        title: 'Integrity Monitor — Supervised Urban Grid',
+        badgeNominal: '4 nominal services',
+        badgeIsolated: '1 isolated node',
+        badgeStandby: 'Nominal state',
+        toggleAria: 'Toggle visualization between nominal state and isolated anomaly',
+        ariaTitle: 'Supervised urban network diagram showing preventive anomaly isolation',
+        hub: 'Municipal Supervision',
+        hubSub: 'Passive telemetry',
+        water: 'Potable Water',
+        power: 'Power & Grid',
+        transit: 'Transit & Signals',
+        buildings: 'Public Buildings',
+        remote: 'Remote-Maint. Node',
+        isolated: 'Isolation active',
+        nominalNodeState: 'Monitored link',
+        legendNominal: 'Monitored nominal service',
+        legendWatch: 'Reference perimeter',
+        legendAlert: 'Anomaly detected & contained',
+      };
+---
+
+<figure
+  id="grid-visual-frame"
+  class="schematic-frame"
+  data-gv-state="isolated"
+  data-label-isolated={copy.badgeIsolated}
+  data-label-nominal={copy.badgeStandby}
+  data-node-isolated={copy.isolated}
+  data-node-nominal={copy.nominalNodeState}
+  data-live-isolated={scrollLabel}
+  data-live-nominal={nominalLabel}
+>
+  <div class="schematic-head">
+    <span class="schematic-title">{copy.title}</span>
+    <div class="schematic-badges">
+      <span class="schematic-status schematic-status-petrol">
+        <span class="status-dot status-dot-petrol" aria-hidden="true"></span>
+        <span>{copy.badgeNominal}</span>
+      </span>
+      <button
+        type="button"
+        id="gv-state-toggle"
+        class="schematic-status schematic-status-signal schematic-toggle"
+        aria-pressed="true"
+        aria-label={copy.toggleAria}
+      >
+        <span class="status-dot status-dot-signal" aria-hidden="true"></span>
+        <span id="gv-toggle-label">{copy.badgeIsolated}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Desktop Wide Plate (viewBox 540x400; every <text> >= 11px effective at 1440px) -->
+  <svg
+    class="schematic-svg diagram-svg-desktop"
+    viewBox="0 0 540 400"
+    role="img"
+    aria-labelledby="gv-d-title gv-d-desc"
+  >
+    <title id="gv-d-title">{copy.ariaTitle}</title>
+    <desc id="gv-d-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="gv-d-dot-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="10" cy="10" r="0.85" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="gv-d-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="gv-d-glow-petrol" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1F4A4D" stop-opacity="0.72" />
+        <stop offset="65%" stop-color="#1F4A4D" stop-opacity="0.18" />
+        <stop offset="100%" stop-color="#1F4A4D" stop-opacity="0" />
+      </radialGradient>
+      <radialGradient id="gv-d-glow-signal" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F26357" stop-opacity="0.52" />
+        <stop offset="50%" stop-color="#F26357" stop-opacity="0.16" />
+        <stop offset="100%" stop-color="#F26357" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="8" y="8" width="524" height="384" fill="url(#gv-d-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="8" y="8" width="524" height="384" fill="url(#gv-d-dot-grid)" />
+
+    <g transform="translate(222, 200)" fill="none">
+      <circle r="158" stroke="#3A2F27" stroke-width="0.9" stroke-dasharray="2 6" />
+      <circle r="118" stroke="#3A2F27" stroke-width="1.2" />
+      <circle r="72" stroke="#CFE3E0" stroke-opacity="0.32" stroke-width="0.9" stroke-dasharray="6 4" />
+    </g>
+
+    <g stroke="#3A2F27" stroke-width="0.8">
+      <line x1="74" y1="26" x2="74" y2="376" />
+      <line x1="222" y1="26" x2="222" y2="376" />
+      <line x1="370" y1="26" x2="370" y2="376" />
+      <line x1="34" y1="94" x2="516" y2="94" />
+      <line x1="34" y1="200" x2="516" y2="200" />
+      <line x1="34" y1="306" x2="516" y2="306" />
+    </g>
+
+    <g fill="#B8A990" font-family="'IBM Plex Mono', monospace" font-size="11">
+      <text x="70" y="21">A.01</text>
+      <text x="214" y="21">B.02</text>
+      <text x="362" y="21">C.03</text>
+      <text x="468" y="21">D.04</text>
+      <text x="14" y="98">N1</text>
+      <text x="14" y="204">N2</text>
+      <text x="14" y="310">N3</text>
+    </g>
+
+    <circle cx="222" cy="200" r="70" fill="url(#gv-d-glow-petrol)" />
+    <circle cx="112" cy="94" r="36" fill="url(#gv-d-glow-petrol)" />
+    <circle cx="332" cy="94" r="36" fill="url(#gv-d-glow-petrol)" />
+    <circle cx="112" cy="306" r="36" fill="url(#gv-d-glow-petrol)" />
+    <circle cx="332" cy="306" r="36" fill="url(#gv-d-glow-petrol)" />
+    <circle class="gv-anomaly-halo" cx="440" cy="200" r="68" fill="url(#gv-d-glow-signal)" />
+
+    <g fill="none">
+      <line x1="112" y1="94" x2="222" y2="200" stroke="#1F4A4D" stroke-width="5.5" />
+      <line x1="112" y1="94" x2="222" y2="200" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="332" y1="94" x2="222" y2="200" stroke="#1F4A4D" stroke-width="5.5" />
+      <line x1="332" y1="94" x2="222" y2="200" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="112" y1="306" x2="222" y2="200" stroke="#1F4A4D" stroke-width="5.5" />
+      <line x1="112" y1="306" x2="222" y2="200" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="332" y1="306" x2="222" y2="200" stroke="#1F4A4D" stroke-width="5.5" />
+      <line x1="332" y1="306" x2="222" y2="200" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <path d="M 112 94 Q 222 62 332 94" stroke="#B8A990" stroke-opacity="0.45" stroke-width="0.9" stroke-dasharray="3 3" />
+      <path d="M 112 306 Q 222 338 332 306" stroke="#B8A990" stroke-opacity="0.45" stroke-width="0.9" stroke-dasharray="3 3" />
+
+      <!-- Perimeter link from reference ring to remote maintenance node (symmetric with mobile plate) -->
+      <line class="gv-remote-link-outer" x1="340" y1="200" x2="378" y2="200" stroke="#B8A990" stroke-width="1.5" stroke-dasharray="4 3" />
+      <line class="gv-remote-link-inner" x1="392" y1="200" x2="440" y2="200" stroke="#F26357" stroke-opacity="0.7" stroke-width="1.3" stroke-dasharray="2 4" />
+    </g>
+
+    <g stroke="#EDE4D3" stroke-width="1.8">
+      <line x1="161" y1="138" x2="173" y2="150" />
+      <line x1="271" y1="150" x2="283" y2="138" />
+      <line x1="161" y1="262" x2="173" y2="250" />
+      <line x1="271" y1="250" x2="283" y2="262" />
+    </g>
+
+    <!-- Double-Bar Defensive Containment Gate -->
+    <g class="gv-gate">
+      <line class="gv-gate-bar-primary" x1="381" y1="172" x2="381" y2="228" stroke="#F26357" stroke-width="3" />
+      <line class="gv-gate-bar-secondary" x1="388" y1="177" x2="388" y2="223" stroke="#EDE4D3" stroke-width="1.4" />
+      <circle class="gv-gate-lock" cx="384.5" cy="200" r="5" fill="#1A1512" stroke="#F26357" stroke-width="1.6" />
+    </g>
+
+    <!-- Central Municipal Supervision Core -->
+    <g transform="translate(222, 200)">
+      <circle r="38" fill="#1A1512" stroke="#B8A990" stroke-width="1" stroke-dasharray="4 3" />
+      <circle r="30" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.8" />
+      <circle r="8" fill="#CFE3E0" />
+      <circle r="3" fill="#1A1512" />
+      <rect x="-92" y="42" width="184" height="40" fill="#1F4A4D" stroke="#CFE3E0" stroke-opacity="0.65" stroke-width="1" />
+      <text x="0" y="58" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="12" font-weight="600">
+        {copy.hub}
+      </text>
+      <text x="0" y="74" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="11">
+        {copy.hubSub}
+      </text>
+    </g>
+
+    <!-- 4 Nominal Municipal Service Nodes -->
+    <g transform="translate(112, 94)">
+      <circle r="19" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.6" />
+      <circle r="11" fill="none" stroke="#CFE3E0" stroke-opacity="0.45" stroke-width="0.9" />
+      <circle r="4.5" fill="#EDE4D3" />
+      <rect x="-58" y="-42" width="116" height="20" fill="#1A1512" stroke="#3A2F27" stroke-width="0.8" />
+      <text x="0" y="-28" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11.5" font-weight="500">
+        {copy.water}
+      </text>
+    </g>
+
+    <g transform="translate(332, 94)">
+      <circle r="19" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.6" />
+      <circle r="11" fill="none" stroke="#CFE3E0" stroke-opacity="0.45" stroke-width="0.9" />
+      <circle r="4.5" fill="#EDE4D3" />
+      <rect x="-62" y="-42" width="124" height="20" fill="#1A1512" stroke="#3A2F27" stroke-width="0.8" />
+      <text x="0" y="-28" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11.5" font-weight="500">
+        {copy.power}
+      </text>
+    </g>
+
+    <g transform="translate(112, 306)">
+      <circle r="19" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.6" />
+      <circle r="11" fill="none" stroke="#CFE3E0" stroke-opacity="0.45" stroke-width="0.9" />
+      <circle r="4.5" fill="#EDE4D3" />
+      <rect x="-60" y="24" width="120" height="20" fill="#1A1512" stroke="#3A2F27" stroke-width="0.8" />
+      <text x="0" y="38" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11.5" font-weight="500">
+        {copy.transit}
+      </text>
+    </g>
+
+    <g transform="translate(332, 306)">
+      <circle r="19" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.6" />
+      <circle r="11" fill="none" stroke="#CFE3E0" stroke-opacity="0.45" stroke-width="0.9" />
+      <circle r="4.5" fill="#EDE4D3" />
+      <rect x="-66" y="24" width="132" height="20" fill="#1A1512" stroke="#3A2F27" stroke-width="0.8" />
+      <text x="0" y="38" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="11.5" font-weight="500">
+        {copy.buildings}
+      </text>
+    </g>
+
+    <!-- Isolated Remote-Maintenance Node -->
+    <g transform="translate(440, 200)">
+      <g class="gv-anomaly-rings">
+        <circle class="gv-anomaly-ring-outer" r="46" fill="none" stroke="#F26357" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="3 4" />
+        <circle class="gv-anomaly-ring-inner" r="34" fill="none" stroke="#F26357" stroke-width="1.6" stroke-dasharray="6 3" />
+      </g>
+      <circle class="gv-anomaly-core-ring" r="21" fill="#1A1512" stroke="#F26357" stroke-width="2.4" />
+      <circle class="gv-anomaly-core-dot" r="7.5" fill="#F26357" />
+      <rect class="gv-anomaly-badge" x="-78" y="51" width="156" height="40" fill="#1A1512" stroke="#F26357" stroke-width="1" />
+      <text class="gv-anomaly-title" x="0" y="67" text-anchor="middle" fill="#F26357" font-family="'IBM Plex Sans', sans-serif" font-size="11.5" font-weight="600">
+        {copy.remote}
+      </text>
+      <text class="gv-anomaly-state-label" x="0" y="83" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Mono', monospace" font-size="11">
+        {copy.isolated}
+      </text>
+    </g>
+  </svg>
+
+  <!-- Mobile Compact Stacked Plate (viewBox 340x492; every <text> >= 12.5 -> >= 11.7px effective at 390px) -->
+  <svg
+    class="schematic-svg diagram-svg-mobile"
+    viewBox="0 0 340 492"
+    role="img"
+    aria-labelledby="gv-m-title gv-m-desc"
+    aria-hidden="true"
+  >
+    <title id="gv-m-title">{copy.ariaTitle}</title>
+    <desc id="gv-m-desc">{caption}</desc>
+
+    <defs>
+      <pattern id="gv-m-dot-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+        <circle cx="9" cy="9" r="0.8" fill="#3A2F27" />
+      </pattern>
+      <linearGradient id="gv-m-plate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1A1512" />
+        <stop offset="100%" stop-color="#231D19" />
+      </linearGradient>
+      <radialGradient id="gv-m-glow-petrol" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1F4A4D" stop-opacity="0.72" />
+        <stop offset="100%" stop-color="#1F4A4D" stop-opacity="0" />
+      </radialGradient>
+      <radialGradient id="gv-m-glow-signal" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F26357" stop-opacity="0.52" />
+        <stop offset="55%" stop-color="#F26357" stop-opacity="0.16" />
+        <stop offset="100%" stop-color="#F26357" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <rect x="6" y="6" width="328" height="480" fill="url(#gv-m-plate-bg)" stroke="#3A2F27" stroke-width="1" />
+    <rect x="6" y="6" width="328" height="480" fill="url(#gv-m-dot-grid)" />
+
+    <circle cx="170" cy="166" r="126" fill="none" stroke="#3A2F27" stroke-width="1" stroke-dasharray="2 5" />
+    <circle cx="170" cy="166" r="82" fill="none" stroke="#CFE3E0" stroke-opacity="0.3" stroke-width="0.9" stroke-dasharray="5 4" />
+    <circle cx="170" cy="166" r="64" fill="url(#gv-m-glow-petrol)" />
+    <circle class="gv-anomaly-halo" cx="170" cy="396" r="56" fill="url(#gv-m-glow-signal)" />
+
+    <!-- Nominal Telemetry Conduits -->
+    <g fill="none">
+      <line x1="86" y1="68" x2="170" y2="166" stroke="#1F4A4D" stroke-width="5" />
+      <line x1="86" y1="68" x2="170" y2="166" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="254" y1="68" x2="170" y2="166" stroke="#1F4A4D" stroke-width="5" />
+      <line x1="254" y1="68" x2="170" y2="166" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="86" y1="268" x2="170" y2="166" stroke="#1F4A4D" stroke-width="5" />
+      <line x1="86" y1="268" x2="170" y2="166" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <line x1="254" y1="268" x2="170" y2="166" stroke="#1F4A4D" stroke-width="5" />
+      <line x1="254" y1="268" x2="170" y2="166" stroke="#CFE3E0" stroke-width="1.3" />
+
+      <!-- Perimeter link down to containment gate & remote node -->
+      <line class="gv-remote-link-outer" x1="170" y1="286" x2="170" y2="332" stroke="#B8A990" stroke-width="1.5" stroke-dasharray="4 3" />
+      <line class="gv-remote-link-inner" x1="170" y1="346" x2="170" y2="396" stroke="#F26357" stroke-opacity="0.7" stroke-width="1.4" stroke-dasharray="2 4" />
+    </g>
+
+    <!-- Horizontal Double-Bar Defensive Containment Gate -->
+    <g class="gv-gate">
+      <line class="gv-gate-bar-primary" x1="112" y1="335" x2="228" y2="335" stroke="#F26357" stroke-width="3" />
+      <line class="gv-gate-bar-secondary" x1="120" y1="342" x2="220" y2="342" stroke="#EDE4D3" stroke-width="1.4" />
+      <circle class="gv-gate-lock" cx="170" cy="338.5" r="5" fill="#1A1512" stroke="#F26357" stroke-width="1.6" />
+    </g>
+
+    <!-- Top-Left & Top-Right Nominal Nodes -->
+    <g transform="translate(86, 68)">
+      <circle r="16" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+      <circle r="4" fill="#EDE4D3" />
+      <rect x="-68" y="-44" width="136" height="23" fill="#1A1512" stroke="#3A2F27" stroke-width="0.9" />
+      <text x="0" y="-28" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="500">
+        {copy.water}
+      </text>
+    </g>
+
+    <g transform="translate(254, 68)">
+      <circle r="16" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+      <circle r="4" fill="#EDE4D3" />
+      <rect x="-68" y="-44" width="136" height="23" fill="#1A1512" stroke="#3A2F27" stroke-width="0.9" />
+      <text x="0" y="-28" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="500">
+        {copy.power}
+      </text>
+    </g>
+
+    <!-- Central Municipal Supervision Hub -->
+    <g transform="translate(170, 166)">
+      <circle r="31" fill="#1A1512" stroke="#B8A990" stroke-width="1" stroke-dasharray="4 3" />
+      <circle r="24" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.6" />
+      <circle r="6.5" fill="#CFE3E0" />
+      <rect x="-102" y="28" width="204" height="44" fill="#1F4A4D" stroke="#CFE3E0" stroke-opacity="0.7" stroke-width="1" />
+      <text x="0" y="46" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+        {copy.hub}
+      </text>
+      <text x="0" y="64" text-anchor="middle" fill="#CFE3E0" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+        {copy.hubSub}
+      </text>
+    </g>
+
+    <!-- Bottom-Left & Bottom-Right Nominal Nodes -->
+    <g transform="translate(86, 268)">
+      <circle r="16" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+      <circle r="4" fill="#EDE4D3" />
+      <rect x="-68" y="20" width="136" height="23" fill="#1A1512" stroke="#3A2F27" stroke-width="0.9" />
+      <text x="0" y="36" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="500">
+        {copy.transit}
+      </text>
+    </g>
+
+    <g transform="translate(254, 268)">
+      <circle r="16" fill="#1F4A4D" stroke="#CFE3E0" stroke-width="1.5" />
+      <circle r="4" fill="#EDE4D3" />
+      <rect x="-68" y="20" width="136" height="23" fill="#1A1512" stroke="#3A2F27" stroke-width="0.9" />
+      <text x="0" y="36" text-anchor="middle" fill="#EDE4D3" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="500">
+        {copy.buildings}
+      </text>
+    </g>
+
+    <!-- Isolated Remote-Maintenance Node -->
+    <g transform="translate(170, 396)">
+      <g class="gv-anomaly-rings">
+        <circle class="gv-anomaly-ring-outer" r="40" fill="none" stroke="#F26357" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="3 4" />
+        <circle class="gv-anomaly-ring-inner" r="30" fill="none" stroke="#F26357" stroke-width="1.6" stroke-dasharray="6 3" />
+      </g>
+      <circle class="gv-anomaly-core-ring" r="19" fill="#1A1512" stroke="#F26357" stroke-width="2.4" />
+      <circle class="gv-anomaly-core-dot" r="7" fill="#F26357" />
+      <rect class="gv-anomaly-badge" x="-96" y="34" width="192" height="44" fill="#1A1512" stroke="#F26357" stroke-width="1" />
+      <text class="gv-anomaly-title" x="0" y="52" text-anchor="middle" fill="#F26357" font-family="'IBM Plex Sans', sans-serif" font-size="13" font-weight="600">
+        {copy.remote}
+      </text>
+      <text class="gv-anomaly-state-label" x="0" y="70" text-anchor="middle" fill="#B8A990" font-family="'IBM Plex Mono', monospace" font-size="12.5">
+        {copy.isolated}
+      </text>
+    </g>
+  </svg>
+
+  <div class="schematic-legend">
+    <span class="legend-item">
+      <span class="legend-swatch legend-swatch-petrol" aria-hidden="true"></span>
+      <span>{copy.legendNominal}</span>
+    </span>
+    <span class="legend-item">
+      <span class="legend-swatch legend-swatch-parchment" aria-hidden="true"></span>
+      <span>{copy.legendWatch}</span>
+    </span>
+    <span class="legend-item">
+      <span class="legend-swatch legend-swatch-signal" aria-hidden="true"></span>
+      <span>{copy.legendAlert}</span>
+    </span>
+  </div>
+
+  <figcaption class="schematic-caption">
+    <div id="gv-live-status" class="sr-only" aria-live="polite" aria-atomic="true">{scrollLabel}</div>
+    <div class="gv-status-live">
+      <div class="gv-status-note-nominal">{nominalLabel}</div>
+      <div class="gv-status-note-isolated">{scrollLabel}</div>
+    </div>
+    <div>{caption}</div>
+  </figcaption>
+</figure>
