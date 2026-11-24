@@ -39,12 +39,11 @@ jobs:
 
       - name: Build static site
         working-directory: web
-        # For https://codjiabrian44-cpu.github.io/urban-grid-watch, configure-pages
-        # provides origin=https://codjiabrian44-cpu.github.io and base_path=/urban-grid-watch.
+        # Served from the custom domain br1an.tech at the root (see web/public/CNAME).
         env:
           ASTRO_TELEMETRY_DISABLED: '1'
-          SITE_URL: ${{ steps.pages.outputs.origin }}
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PUBLIC_SITE_URL: https://br1an.tech
+          PUBLIC_BASE_PATH: /
         run: npm run build
 
       - name: Upload Pages artifact
